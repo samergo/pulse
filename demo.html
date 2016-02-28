@@ -1,0 +1,100 @@
+<head>
+  <title>User-Status Demonstration and Testing</title>
+</head>
+
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            {{> login}}
+            {{> consensus}}
+            {{> status userStatus}}
+        </div>
+        <div class="col-md-8">
+            {{> serverStatus}}
+        </div>
+    </div>
+</div>
+</body>
+
+<template name="consensus">
+  {{> consensusBar}}
+  <p>Consensus from {{consensusCount}} of {{onlineCount}}</p>
+  <div class="alert alert-info" role="alert">
+    Tap anywhere to signal
+  </div>
+</template>
+
+<template name="consensusBar">
+  <p>Pulse sync</p>
+  <div class="progress">
+    <div class="progress-bar progress-bar-striped {{progressBarStyle}} active" role="progressbar"
+    aria-valuenow="{{percentConsensus}}" aria-valuemin="0" aria-valuemax="100" style="width:{{percentConsensus}}%">
+    </div>
+  </div>
+</template>
+
+<template name="login">
+  <div class="pull-right">
+    {{> loginButtons}}
+  </div>
+</template>
+
+<template name="status">
+    <dl class="dl-horizontal">
+        <dt>Server Time:</dt><dd>{{serverTime}}</dd>
+        <dt>Local Offset:</dt><dd>{{serverOffset}} ms</dd>
+        <dt>RTT:</dt><dd>{{serverRTT}} ms</dd>
+        <dt>Idle:</dt><dd>{{isIdleText}}</dd>
+        <dt>Monitor on:</dt><dd>{{isMonitoringText}}</dd>
+        <dt>Last Activity:</dt><dd>{{lastActivity}}</dd>
+    </dl>
+</template>
+
+<template name="serverStatus">
+  <table class="table table-condensed table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Username/Connection</th>
+        <th>Last Activity</th>
+        <th>IP (<i>Last</i>)</th>
+      </tr>
+    </thead>
+    <tbody>
+    {{#each anonymous}}
+    {{> serverConnection}}
+    {{/each}}
+    {{#each users}}
+      <tr class="{{userClass}}">
+        <td>{{username}}<br>(last login {{localeTime status.lastLogin.date}})</td>
+        <td>
+          {{#with status.lastActivity}}
+          {{> relTime}}
+          {{/with}}
+        </td>
+        <td><i>{{status.lastLogin.ipAddr}}</i></td>
+      </tr>
+      {{#each connections}}
+      {{> serverConnection}}
+      {{/each}}
+    {{/each}}
+    </tbody>
+  </table>
+</template>
+
+<template name="serverConnection">
+    <tr class="{{connectionClass}}">
+        <td>{{_id}}{{#with loginTime}}<br>(login {{this}}){{/with}}</td>
+        <td>{{#with lastActivity}}
+            {{> relTime}}
+            {{/with}}
+        </td>
+        <td>{{ipAddr}}</td>
+    </tr>
+</template>
+
+<template name="relTime">
+    {{localeTime this}}
+    <br>
+    ({{relativeTime this}})
+</template>
