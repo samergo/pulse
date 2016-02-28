@@ -50,9 +50,11 @@ if Meteor.isClient
         ""
       else
         if percentConsensus() < 80
-          "progress-bar-warning"
+          # "progress-bar-warning"
+          ""
         else
-          "progress-bar-danger"
+          #"progress-bar-danger"
+          ""
 
   Template.status.helpers
     serverTime: -> new Date(TimeSync.serverTime()).toLocaleString()
